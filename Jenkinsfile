@@ -7,16 +7,17 @@
 // 	}
 // }
 
-pipeline {
+pipeline 
+{
 	agent any
-	stages {
+	stages 
+	{
 		stage('Build')
 		{
 			steps {
 				echo "Build"
 			}			
 		}
-	}
 		stage('Test')
 		{
 			steps {
@@ -28,6 +29,7 @@ pipeline {
 			steps {
 			echo "Intergration test"
 		} 
-	}		
+		}
+	}			
 		
 }
