@@ -7,8 +7,27 @@
 // 	}
 // }
 
-node {
-		echo "Build"
-		echo "Test"
-		echo "Intergration test"
+pipeline {
+	agent any
+	stages {
+		stage('Build')
+		{
+			steps {
+				echo "Build"
+			}			
+		}
+	}
+		stage('Test')
+		{
+			steps {
+			echo "Test"
+			}
+		}
+		stage('IT')
+		{
+			steps {
+			echo "Intergration test"
+		} 
+	}		
+		
 }
