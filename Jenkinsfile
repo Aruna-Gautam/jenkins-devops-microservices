@@ -5,7 +5,7 @@
 // 	stage('Test') {
 // 		echo "Test"
 // 	}
-// }
+// } demo
 
 //surefire-   unit test
 //failsafe- integration test
