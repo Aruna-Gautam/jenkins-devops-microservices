@@ -20,7 +20,7 @@ pipeline
 	//agent{docker{image 'node:12.18.3'} }
 	stages 
 	{
-		stage('Build')
+		stage('Checkout')
 		{
 			steps {
 				sh 'mvn --version'
@@ -33,16 +33,23 @@ pipeline
 				echo "JOB_NAME - $env.JOB_NAME"
 			}			
 		}
+		stage('Compile')
+		{
+			steps {
+			sh "mvn clean compile"
+			}
+		}
 		stage('Test')
 		{
 			steps {
-			echo "Test"
-			}
+			sh "mvn test"
+		} 
 		}
-		stage('IT')
+
+		stage('Intergration Test')
 		{
 			steps {
-			echo "Intergration test"
+			sh "mvn failsafe:integration-test failsafe:verify"
 		} 
 		}
 	}			
