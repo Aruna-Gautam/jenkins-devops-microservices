@@ -66,7 +66,7 @@ pipeline
 		stage('Build docker image')
 		{
 			steps {
-				script{
+				script {
 					dockerImage = docker.Build("148415/currency-exchange-devops:${env.BUILD_TAG}")
 				}			
 		} 
@@ -75,11 +75,12 @@ pipeline
 		stage('Push docker image')
 		{
 			steps {
-				script{
-					docker.withRegistry('', 'dockerhub')
-					dockerImage.Push();
-					dockerImage.Push('latest');
+				script {
+					docker.withRegistry('', 'dockerhub') {
+						dockerImage.Push();
+						dockerImage.Push('latest');
 				}
+			}
 		} 
 		}
 	}			
