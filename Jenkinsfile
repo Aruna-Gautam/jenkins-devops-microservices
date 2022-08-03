@@ -7,9 +7,8 @@
 // 	}
 // }
 
-
-#surefire-   unit test
-#failsafe- integration test
+//surefire-   unit test
+//failsafe- integration test
 
 pipeline 
 {
