@@ -67,7 +67,7 @@ pipeline
 		{
 			steps {
 				script{
-					dockerImage = docker.Build("148415/currency-exchange-devops:${env.BUILD_TAG"}")
+					dockerImage = docker.Build("148415/currency-exchange-devops:${env.BUILD_TAG}")
 				}			
 		} 
 		}
