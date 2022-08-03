@@ -7,6 +7,10 @@
 // 	}
 // }
 
+
+#surefire-   unit test
+#failsafe- integration test
+
 pipeline 
 {
 	agent any
@@ -52,6 +56,33 @@ pipeline
 			sh "mvn failsafe:integration-test failsafe:verify"
 		} 
 		}
+
+		stage('Package')
+		{
+			steps {
+			sh "mvn package -DskipTests"
+		} 
+		}
+
+		stage('Build docker image')
+		{
+			steps {
+				script{
+					dockerImage = docker.Build("148415/currency-exchange-devops:${env.BUILD_TAG"}")
+				}			
+		} 
+		}
+
+		stage('Push docker image')
+		{
+			steps {
+				script{
+					docker.withRegistry('', 'dockerhub')
+					dockerImage.Push();
+					dockerImage.Push('latest');
+				}
+		} 
+		}
 	}			
 		
 post {
@@ -68,3 +99,6 @@ post {
 	//changed 
 }
 }
+
+
+
