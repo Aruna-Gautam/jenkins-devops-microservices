@@ -1,104 +1,76 @@
-// node {
-// 	stage('Build') {
-// 		echo "Build"
-// 	}
-// 	stage('Test') {
-// 		echo "Test"
-// 	}
-// } demo
-
-//surefire-   unit test
-//failsafe- integration test
-
-pipeline 
-{
+// declarative Pipeline v1.7
+pipeline {
 	agent any
+	// agent { docker { image 'maven:3.6.3'}}
+	// agent { docker { image 'node:13.8'}}
 	environment {
-		
 		dockerHome = tool 'myDocker'
 		mavenHome = tool 'myMaven'
 		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
 	}
-	//agent{docker{image 'maven:3.6.3'} }
-	//agent{docker{image 'node:12.18.3'} }
-	stages 
-	{
-		stage('Checkout')
-		{
+	stages {
+		stage('Checkout') {
 			steps {
 				sh 'mvn --version'
-				sh 'docker version' 
+				sh 'docker version'
 				echo "Build"
-				echo "$PATH"
+				echo "PATH - $PATH"
 				echo "BUILD_NUMBER - $env.BUILD_NUMBER"
 				echo "BUILD_ID - $env.BUILD_ID"
-				echo "BUILD_TAG - $env.BUILD_TAG"
 				echo "JOB_NAME - $env.JOB_NAME"
-			}			
-		}
-		stage('Compile')
-		{
-			steps {
-			sh "mvn clean compile"
+				echo "BUILD_TAG - $env.BUILD_TAG"
+				echo "BUILD_URL - $env.BUILD_URL"
 			}
 		}
-		stage('Test')
-		{
+		stage('Compile') {
 			steps {
-			sh "mvn test"
-		} 
+				sh 'mvn clean compile'
+			}
 		}
-
-		stage('Intergration Test')
-		{
+		stage('Test') {
 			steps {
-			sh "mvn failsafe:integration-test failsafe:verify"
-		} 
+				sh 'mvn test'
+			}
 		}
-
-		stage('Package')
-		{
+		stage('Integration Test') {
 			steps {
-			sh "mvn package -DskipTests"
-		} 
+				sh 'mvn failsafe:integration-test failsafe:verify'
+			}
 		}
-
-		stage('Build docker image')
-		{
+		stage('Pakage') {
+			steps {
+				sh 'mvn package -DskipTests'
+			}
+		}
+		stage('Build DockerImage') {
 			steps {
 				script {
-					dockerImage = docker.Build("148415/currency-exchange-devops:${env.BUILD_TAG}")
-				}			
-		} 
-		}
+					dockerImage = docker.build("148415/currency-exchange-devops:${env.BUILD_TAG}")
+				}
 
-		stage('Push docker image')
-		{
+			}
+		}
+		stage('Push DockerImage') {
 			steps {
 				script {
 					docker.withRegistry('', 'dockerhub') {
-						dockerImage.Push();
-						dockerImage.Push('latest');
+						dockerImage.push();
+						dockerImage.push('latest');
+				}
 				}
 			}
-		} 
 		}
-	}			
-		
-post {
-	always{
-		echo "I am awesome, I run always"
 	}
-	success{
-		echo "I run when you are successful"
+	post {
+		always{
+			echo 'Im awesome. I run always'
+		}
+		success {
+			echo 'I run when you are successful'
+		}
+		failure {
+			echo 'I run when you fail'
+		}
 	}
-	failure{
-		echo "I run when you fail"
-	}
-	//unstable
-	//changed 
 }
-}
-
-
 
